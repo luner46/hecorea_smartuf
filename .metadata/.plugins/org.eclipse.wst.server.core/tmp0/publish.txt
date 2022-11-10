@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Thu Oct 27 14:13:51 KST 2022
+org.eclipse.jst.jee.server\:/binary\:C\:\\workspace\\eclipse_workspace\\hecorea\\SMARTUF\\SMARTUF\\WebContent\\WEB-INF\\lib\\spring-web-4.3.17.RELEASE.jar=WEB-INF/lib/spring-web-4.3.17.RELEASE.jar
+org.eclipse.jst.jee.server\:/binary\:C\:\\workspace\\eclipse_workspace\\hecorea\\SMARTUF\\SMARTUF\\WebContent\\WEB-INF\\lib\\log4j-core-2.0-rc1.jar=WEB-INF/lib/log4j-core-2.0-rc1.jar

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="592"/>
+		<item key="DIALOG_Y_ORIGIN" value="578"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="isRegEx" value="false"/>
+		<item key="selection" value="Land"/>
+		<item key="casesensitive" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="wrap" value="true"/>
+		<item key="wholeword" value="false"/>
+		<list key="findhistory">
+			<item value="land"/>
+			<item value="daegu_danger_ds_layer"/>
+			<item value="daegu_danger_bc_layer"/>
+			<item value="CS1001"/>
+			<item value="CS1"/>
+			<item value="CS"/>
+			<item value="console"/>
+			<item value="selectNodeDataLive"/>
+			<item value="selectNodeDataL"/>
+			<item value="selectNodeData"/>
+			<item value="daegu_danger_sc_layer"/>
+			<item value="flood_ds_output_2dis_"/>
+			<item value="daegu_danger_ds_layer "/>
+			<item value="addL"/>
+			<item value="add"/>
+		</list>
+		<list key="replacehistory">
+			<item value="DS3000"/>
+			<item value="/images/"/>
+			<item value="-"/>
+			<item value="&quot;/images/"/>
+			<item value="00B7EE"/>
+			<item value="5F52A0"/>
+			<item value="BA0469"/>
+			<item value="D80012"/>
+			<item value="lv"/>
+			<item value="LV"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_WIDTH" value="261"/>
+		<item key="DIALOG_FONT_NAME" value="1|맑은 고딕|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|맑은 고딕"/>
+		<item key="DIALOG_HEIGHT" value="381"/>
+		<item key="DIALOG_X_ORIGIN" value="8"/>
+		<item key="DIALOG_Y_ORIGIN" value="211"/>
+	</section>
+</section>

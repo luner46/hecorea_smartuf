@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\workspace\eclipse_workspace\hecorea\SMARTUF\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3021907800.index
+2178870515.index
+4043419248.index
+192620682.index
+2699925007.index
+2866376285.index

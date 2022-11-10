@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;floodInfo.jsp&apos; to &apos;02&apos;&#x0D;&#x0A;- Original project: &apos;SMARTUF&apos;&#x0D;&#x0A;- Destination element: &apos;02&apos;&#x0D;&#x0A;- Original element: &apos;floodInfo.jsp&apos;" description="Copy file" element1="WebContent/WEB-INF/jsp/main/02/floodInfo.jsp" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1598944082780" target="/SMARTUF/WebContent/WEB-INF/jsp/main/02" units="0" version="1.0"/>
+</session>

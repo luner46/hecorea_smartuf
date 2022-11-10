@@ -1,0 +1,42 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="LIDSOFT:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/LIDSOFT_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="LIDSOFT" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="asm-3.1.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="cglib-2.2.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="commons-dbcp-1.4.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="commons-fileupload-1.2.1.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="commons-io-1.4.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="commons-logging-1.1.1.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="commons-pool-1.5.5.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="cos.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="jstl.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="log4j-1.2.13.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="mybatis-3.0.4.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="mybatis-spring-1.0.0-RC3.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="mysql-connector-java-5.1.7-bin.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="ojdbc6.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.asm-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.beans-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.context-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.context.support-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.core-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.expression-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.jdbc-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.transaction-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.web-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="org.springframework.web.servlet-3.0.5.RELEASE.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="slf4j-api-1.5.8.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="slf4j-log4j12-1.5.8.jar" module-name="LIDSOFT" />
+          <element id="library" level="module" name="standard.jar" module-name="LIDSOFT" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="LIDSOFT/web/Web" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hecorea.smartuf.main.dao.MainContDAO">
+	
+	<select id="selectRainfallData" parameterType="hashmap" resultType="hashmap">
+		SELECT IFNULL(ROUND(YY.H0M, 1), '-') AS H0M
+		     , IFNULL(ROUND(YY.H1M, 1), '-') AS H1M
+		     , YY.SSGCD AS SSGCD
+		     , YY.SSGNM AS SSGNM
+		     , IFNULL(ROUND(Y.AWS_1HR_MAP, 1), '-') AS H2M
+		  FROM TBL_AWS_1HR_MAP_DATA Y RIGHT OUTER JOIN 
+		       (SELECT XX.H0M AS H0M
+		        	 , XX.SSGCD AS SSGCD
+			         , XX.SSGNM AS SSGNM
+				 	 , X.AWS_1HR_MAP AS H1M
+			      FROM TBL_AWS_1HR_MAP_DATA X RIGHT OUTER JOIN
+				       (SELECT a.SSG_CD AS SSGCD
+			     	         , a.SSG_NM AS SSGNM
+					     	 , AWS_1HR_MAP AS H0M
+					  	  FROM TBL_ADMIN_SSG_INFO a LEFT OUTER JOIN TBL_AWS_1HR_MAP_DATA b ON a.SSG_CD = b.SSG_CD
+			   		   	   AND b.OBS_TM = #{dt0H}
+				       ) XX ON XX.SSGCD = X.SSG_CD
+			   		 AND X.OBS_TM = #{dt1H}
+		       ) YY ON YY.SSGCD = Y.SSG_CD
+			 AND Y.OBS_TM = #{dt2H}
+	    ORDER BY YY.SSGNM
+	</select>
+	
+	
+	<select id="selectNodeData" parameterType="hashmap" resultType="hashmap">
+		SELECT b.ACC_PRCP AS ACCPRCP
+			 , a.NODE AS NODE
+			 , a.LAT AS LAT
+			 , a.LON AS LON
+			 , IFNULL(b.GRADE, 1) AS GRADE
+		  FROM TBL_FLOOD_NODE_INFO a, TBL_FLOOD_SCENARIO_DATA b
+		 WHERE 1=1
+		   AND a.NODE = b.NODE
+		   AND b.ACC_PRCP = #{acc}
+		   AND FCST_TIME_STEP = #{step}
+	</select>
+	
+	
+	<select id="selectNodeDataMax" parameterType="hashmap" resultType="hashmap">
+		SELECT a.ACC_PRCP AS ACCPRCP
+		     , a.NODE AS NODE
+		     , b.LAT AS LAT
+		     , b.LON AS LON
+		     , IFNULL(MAX(a.GRADE), 1) AS GRADE
+		  FROM TBL_FLOOD_SCENARIO_DATA a, TBL_FLOOD_NODE_INFO b
+		 WHERE 1=1
+		   AND a.NODE = b.NODE 
+		   AND a.ACC_PRCP = #{acc}
+		 GROUP BY a.ACC_PRCP, a.NODE
+	</select>
+	
+	
+	<select id="selectNodeDetail" parameterType="hashmap" resultType="hashmap">
+		SELECT b.ACC_PRCP AS ACCPRCP
+			 , a.NODE AS NODE
+			 , a.LAT AS LAT
+			 , a.LON AS LON
+			 , b.FCST_TIME_STEP AS FCSTTIMESTEP
+			 , ROUND(b.DEPTH, 3) AS DEPTH
+			 , ROUND(b.OVFLW, 1) AS OVFLW
+			 , IFNULL(b.GRADE, 1) AS GRADE
+		  FROM TBL_FLOOD_NODE_INFO a, TBL_FLOOD_SCENARIO_DATA b
+		 WHERE 1=1
+		   AND a.NODE = b.NODE
+		   AND b.ACC_PRCP = #{acc}
+		   AND a.NODE = #{node}
+	  ORDER BY b. FCST_TIME_STEP ASC
+	</select>
+	
+	
+	<select id="selectWaterLevelData" parameterType="hashmap" resultType="hashmap">
+		SELECT GID AS GID
+			 , UID AS UID
+			 , OBS_TM AS OBSTM
+			 , RIGHT(OBS_TM, 2) AS MIN
+			 , ROUND(SENSOR_1MIN_WL, 1) AS WL
+		  FROM TBL_SENSOR_1MIN_WL_DATA
+		 WHERE 1=1
+		   <!-- AND OBS_TM LIKE CONCAT(#{dt}, '%') -->
+		   AND OBS_TM between ${dt24H} and ${dt}
+		   AND GID = #{gid}
+	  ORDER BY OBS_TM
+	</select>
+	
+	
+	<select id="selectFloodMapData" parameterType="hashmap" resultType="hashmap">
+		SELECT ANALYSIS_RANK AS ANALYSIS_RANK
+			 , ADM_NM AS ADM_NM
+			 , ROUND(RSI, 3) AS RSI 
+			 , ROUND(DPI, 3) AS DPI
+			 , ROUND(FVI, 3) AS FVI
+		  FROM TBL_FLOOD_WEAKNESS_ANALYSIS
+	  ORDER BY ANALYSIS_RANK
+	</select>
+	
+	
+	<select id="selectLandSlideData" parameterType="hashmap" resultType="hashmap">
+		SELECT a.LS_CD AS LSCD 
+			 , a.LAT AS LAT 
+			 , a.LON AS LON 
+			 , b.OBS_TM AS OBSTM
+			 , IFNULL(FORMAT(b.AWS_1HR_MAP, 2), "0.0") AS CURRENTRAIN
+			 , IFNULL(b.R_COUNT, "0") AS RCOUNT
+			 , IFNULL(b.W_COUNT, "0") AS WCOUNT
+			 , IFNULL(b.I_VAL, "0.0") AS IVAL
+			 , IFNULL(b.C_VAL, "0.0") AS CVAL
+			 , IFNULL(b.CR_VAL, "0.0") AS CRVAL
+			 , IFNULL(a.CR, "0.0") AS CR
+			 , IFNULL(b.LV1, "d") AS LV1
+			 , IFNULL(b.LV2, "d") AS LV2
+			 , IFNULL(b.LV3, "d") AS LV3
+			 , IFNULL(b.LV4, "d") AS LV4
+		  FROM TBL_LS_STN_INFO a, TBL_EVAL_DATA b
+		 WHERE 1=1
+		   AND a.LS_CD = b.LS_CD 
+		   AND b.OBS_TM = #{dt}
+	</select>
+	
+	
+	<select id="selectLandSlideDetail" parameterType="hashmap" resultType="hashmap">
+		SELECT a.LS_CD AS LSCD 
+			 , a.LAT AS LAT 
+			 , a.LON AS LON 
+			 , b.OBS_TM AS OBSTM
+			 , IFNULL(FORMAT(b.AWS_1HR_MAP, 2), "0.0") AS CURRENTRAIN
+			 , IFNULL(b.R_COUNT, "0") AS RCOUNT
+			 , IFNULL(b.W_COUNT, "0") AS WCOUNT
+			 , IFNULL(b.I_VAL, "0.0") AS IVAL
+			 , IFNULL(b.C_VAL, "0.0") AS CVAL
+			 , IFNULL(b.CR_VAL, "0.0") AS CRVAL
+			 , IFNULL(a.CR, "0.0") AS CR
+			 , IFNULL(b.LV1, "d") AS LV1
+			 , IFNULL(b.LV2, "d") AS LV2
+			 , IFNULL(b.LV3, "d") AS LV3
+			 , IFNULL(b.LV4, "d") AS LV4
+		  FROM TBL_LS_STN_INFO a, TBL_EVAL_DATA b
+		 WHERE 1=1
+		   AND a.LS_CD = b.LS_CD 
+		   AND b.LS_CD = #{lsCd}
+		   AND b.OBS_TM between DATE_FORMAT(DATE_ADD(STR_TO_DATE(${dt}, '%Y%m%d%H'), interval -11 hour), '%Y%m%d%H') and ${dt}
+      ORDER BY b.OBS_TM DESC
+	</select>
+	
+	
+	<select id="selectBasinLevelData" parameterType="hashmap" resultType="hashmap">
+		SELECT IFNULL(a.wlobscd, '-999') AS WLOBSCD
+			 , IFNULL(a.wlobsnm, '-999') AS WLOBSNM
+			 , IFNULL(b.yyyymmddhhmm, '-999') AS OBSTM
+			 , IFNULL(a.lat, '-999') AS LAT
+			 , IFNULL(a.lon, '-999') AS LON
+			 , IFNULL(b.wl, '-999') AS WL
+			 , IFNULL(a.lv1, '-999') AS LV1
+			 , IFNULL(a.lv2, '-999') AS LV2
+			 , IFNULL(a.lv3, '-999') AS LV3
+			 , IFNULL(a.lv4, '-999') AS LV4
+		  FROM TBL_ME_WL_STN_INFO a LEFT OUTER JOIN TBL_ME_WL_10MIN b
+		    ON a.wlobscd = b.wlobscd 
+		   AND b.yyyymmddhhmm = #{dt}
+	</select>
+	
+	
+	<select id="selectBasinLevelDetail" parameterType="hashmap" resultType="hashmap">
+		SELECT IFNULL(a.wlobscd, '-999') AS WLOBSCD
+			 , IFNULL(a.wlobsnm, '-999') AS WLOBSNM
+			 , IFNULL(b.yyyymmddhhmm, '-999') AS OBSTM
+			 , IFNULL(a.lat, '-999') AS LAT
+			 , IFNULL(a.lon, '-999') AS LON
+			 , IFNULL(b.wl, '-999') AS WL
+			 , IFNULL(a.lv1, '-999') AS LV1
+			 , IFNULL(a.lv2, '-999') AS LV2
+			 , IFNULL(a.lv3, '-999') AS LV3
+			 , IFNULL(a.lv4, '-999') AS LV4
+		  FROM (SELECT wlobscd, wlobsnm, lat, lon, lv1, lv2, lv3, lv4 FROM TBL_ME_WL_STN_INFO WHERE wlobscd = ${wlobscd})a LEFT OUTER JOIN TBL_ME_WL_10MIN b
+		    ON a.wlobscd = b.wlobscd 
+		   AND b.yyyymmddhhmm between DATE_FORMAT(DATE_ADD(STR_TO_DATE(${dt}, '%Y%m%d%H%i'), interval -200 minute), '%Y%m%d%H%i') and ${dt}
+	  ORDER BY b.yyyymmddhhmm desc
+	</select>
+	
+	
+	<select id="selectKmaDataImage" parameterType="hashmap" resultType="String">
+		SELECT file_name AS fileName
+		  FROM kma_data_images
+		 WHERE 1=1
+		   AND dt = (SELECT max(dt) AS dt FROM kma_data_images WHERE LEFT(dt, 8) = ${yyyymmdd})
+	</select>
+	
+	
+	<select id="selectSubmersionInfo" resultType="hashmap">
+		SELECT IFNULL(info_id, '-999') AS infoId
+			 , IFNULL(dist_type, '-999') AS distType
+			 , IFNULL(info_name, '-999') AS infoName
+			 , IFNULL(info_model, '-999') AS infoModel
+			 , IFNULL(loc, '-999') AS loc
+			 , IFNULL(lat, '-999') AS lat
+			 , IFNULL(lon, '-999') AS lon
+			 , IFNULL(info_dt, '-999') AS infoDt
+			 , IFNULL(quality, '-999') AS quality
+			 , IFNULL(reason, '-999') AS reason
+			 , IFNULL(forecast, '-999') AS forecast
+			 , IFNULL(etc, '-999') AS etc
+		  FROM tbl_submersion_info
+	</select>
+	
+	
+	<select id="selectSubmersionData" parameterType="hashmap" resultType="hashmap">
+		SELECT IFNULL(info_id, '-') AS infoId
+			 , IFNULL(dist_type, '-') AS distType
+			 , IFNULL(info_name, '-') AS infoName
+			 , IFNULL(info_model, '-') AS infoModel
+			 , IFNULL(loc, '-') AS loc
+			 , IFNULL(lat, '-') AS lat
+			 , IFNULL(lon, '-') AS lon
+			 , IFNULL(info_dt, '-') AS infoDt
+			 , IFNULL(quality, '-') AS quality
+			 , IFNULL(reason, '-') AS reason
+			 , IFNULL(forecast, '-') AS forecast
+			 , IFNULL(etc, '-') AS etc
+		  FROM tbl_submersion_info
+  	     WHERE info_id = ${infoId}
+	</select>
+	
+	
+	<select id="selectStnfallData" parameterType="hashmap" resultType="hashmap">
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27200' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('846', '860') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27200' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('846', '860') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27200' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('846', '860') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+		UNION ALL 
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27290' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('846') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27290' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('846') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27290' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('846') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+		UNION ALL 
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27710' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '810', '813', '825', '827', '828', '846', '860', '919', '935') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27710' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '810', '813', '825', '827', '828', '846', '860', '919', '935') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27710' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '810', '813', '825', '827', '828', '846', '860', '919', '935') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+		UNION ALL 
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27140' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '826', '827', '840', '845', '853', '860') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27140' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '826', '827', '840', '845', '853', '860') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27140' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '826', '827', '840', '845', '853', '860') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+		UNION ALL 
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27230' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846', '853', '860') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27230' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846', '853', '860') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27230' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846', '853', '860') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+		UNION ALL 
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27170' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27170' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27170' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+		UNION ALL 
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27260' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '827', '846', '860') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27260' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '827', '846', '860') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27260' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('143', '827', '846', '860') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+		UNION ALL 
+		(
+		select a.SSG_NM as ssgnm, a.SSG_CD as ssgcd, ifnull(b.rn_mm2, '-') as rnmm2, ifnull(c.rn_mm1, '-') as rnmm1, ifnull(d.rn_mm, '-') as rnmm
+		from TBL_ADMIN_SSG_INFO a
+		, (select max(rn_mm) as rn_mm2, '27110' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846', '860') and yyyymmddhh = ${dt2H}) b
+		, (select max(rn_mm) as rn_mm1, '27110' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846', '860') and yyyymmddhh = ${dt1H}) c
+		, (select max(rn_mm) as rn_mm, '27110' as ssg_cd from kma_aws_1hr_ssg where 1=1 and stn_id in('845', '846', '860') and yyyymmddhh = ${dt0H}) d
+		where 1=1
+		and a.SSG_CD = b.ssg_cd
+		and b.ssg_cd = c.ssg_cd
+		and c.ssg_cd = d.ssg_cd
+		)
+	</select>
+	
+	
+	<select id="selectNodeDataLive" parameterType="hashmap" resultType="hashmap">
+		select f.NODE as NODE
+		, f.LAT as LAT
+		, f.LON as LON
+		, ifnull(g.ACC_PRCP, '000') as ACC_PRCP
+		, ifnull(max(g.DEPTH), '0.000') as DEPTH
+		, ifnull(g.GRADE, '1') as GRADE
+		from 
+		(
+		select e.NODE as NODE
+		, e.SSG_CD as SSG_CD
+		, e.LAT as LAT
+		, e.LON as LON
+		, e.ACC_PRCP as ACC_PRCP
+		from 
+		(
+		select d.NODE as NODE
+		, d.SSG_CD as SSG_CD
+		, d.LAT as LAT
+		, d.LON as LON
+		, case
+		when d.AWS_1HR_MAP &lt; 25 then '000'
+		when d.AWS_1HR_MAP &lt;= 35 then '030'
+		when d.AWS_1HR_MAP &lt;= 45 then '040'
+		when d.AWS_1HR_MAP &lt;= 55 then '050'
+		when d.AWS_1HR_MAP &lt;= 65 then '060'
+		when d.AWS_1HR_MAP &lt;= 75 then '070'
+		when d.AWS_1HR_MAP &lt;= 85 then '080'
+		when d.AWS_1HR_MAP &lt;= 95 then '090'
+		when d.AWS_1HR_MAP &gt; 95 then '090'
+		end as ACC_PRCP
+		from
+		(
+		select c.NODE as NODE, a.SSG_CD as SSG_CD, b.AWS_1HR_MAP as AWS_1HR_MAP, c.LAT as LAT, c.LON as LON
+		from TBL_ADMIN_SSG_INFO a, (select SSG_CD as SSG_CD, AWS_1HR_MAP as AWS_1HR_MAP from TBL_AWS_1HR_MAP_DATA where OBS_TM =${dt}) b, TBL_FLOOD_NODE_INFO c
+		where 1=1
+		and a.SSG_CD = b.SSG_CD
+		and b.SSG_CD = c.SSG_CD
+		group by c.NODE
+		) d
+		) e
+		) f left outer join TBL_FLOOD_SCENARIO_DATA g
+		on f.ACC_PRCP = g.ACC_PRCP 
+		and f.NODE = g.NODE
+		group by f.NODE
+	</select>
+</mapper>

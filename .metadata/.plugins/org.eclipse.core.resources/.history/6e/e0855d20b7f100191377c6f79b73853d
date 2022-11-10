@@ -1,0 +1,109 @@
+var map = "";
+var overlay = "";
+
+var global_projection = new ol.proj.Projection({
+    code: 'EPSG:4326',
+    units: 'degrees',
+    axisOrientation: 'neu',
+    global: true
+});
+
+var layer_all_basin = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+        url: geoserver_path + '/wms',
+        params: {
+            'LAYERS': 'smartuf:flood_output_2dis_060mm_060m_3q'
+        },
+        opaque: false,
+        serverType: 'geoserver',
+        crossOrigin : 'anonymous'
+    })
+});
+
+var layer_all_river = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: geoserver_path + '/ys/wms',
+        params: {
+            'LAYERS': 'ys:ys_all_river'
+        },
+        opaque: false,
+        serverType: 'geoserver',
+        crossOrigin : 'anonymous'
+    })
+});
+
+var layer_nation_river = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: geoserver_path + '/ys/wms',
+        params: {
+            'LAYERS': 'ys:ys_nation_river'
+        },
+        opaque: false,
+        serverType: 'geoserver',
+        crossOrigin : 'anonymous'
+    })
+});
+
+var layer_sub_river = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: geoserver_path + '/ys/wms',
+        params: {
+            'LAYERS': 'ys:ys_sub_river'
+        },
+        opaque: false,
+        serverType: 'geoserver',
+        crossOrigin : 'anonymous'
+    })
+});
+
+var layer_dam = new ol.layer.Vector({
+	source: new ol.source.Vector(),
+	title : 'dam',
+	visible : true,
+	type : 'Unit'
+});
+
+var layer_res = new ol.layer.Vector({
+	source: new ol.source.Vector(),
+	title : 'res',
+	visible : true,
+	type : 'Unit'
+});
+
+
+/*
+var layer_all_reservoir = new ol.layer.Image({
+    source: new ol.source.ImageVector({
+        source: new ol.source.Vector({
+            url: geoserver_path + '/ys/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ys:ys_all_reservoir&maxFeatures=300&outputFormat=application%2Fjson',
+            format: new ol.format.GeoJSON()
+        }),
+        style: new ol.style.Style({
+        	image: new ol.style.Icon(({
+    	    	anchor: [0.5, 32],
+    	        anchorXUnits: 'fraction',
+    	        anchorYUnits: 'pixels',
+    	        src: '/images/brd_icon_resvr5.png'
+    	    }))
+        })
+    })
+});
+
+var layer_all_dam = new ol.layer.Image({
+    source: new ol.source.ImageVector({
+        source: new ol.source.Vector({
+            url: geoserver_path + '/ys/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ys:ys_all_dam&maxFeatures=300&outputFormat=application%2Fjson',
+            format: new ol.format.GeoJSON()
+        }),
+        style: new ol.style.Style({
+        	image: new ol.style.Icon(({
+    	    	anchor: [0.5, 32],
+    	        anchorXUnits: 'fraction',
+    	        anchorYUnits: 'pixels',
+    	        src: '/images/brd_icon_dam4.png'
+    	    }))
+        })
+    })
+});
+*/
+

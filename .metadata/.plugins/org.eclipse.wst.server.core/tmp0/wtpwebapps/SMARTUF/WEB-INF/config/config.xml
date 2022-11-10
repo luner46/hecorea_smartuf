@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+	<entry key="geoserverPath">http://geornd.hecorea.co.kr/smartuf</entry>
+	
+	<entry key="simulOutputPath">/ws/yshydro/model/mk_wbl/_outfile/</entry>
+	<entry key="simulInputPath">/ws/yshydro/model/mk_wbl/_simul_input/</entry>
+	<entry key="simulStoragePath">/ws/yshydro/model/mk_wbl/_outfile_storage/</entry>
+	
+</properties>
