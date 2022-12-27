@@ -27,6 +27,25 @@
 	    ORDER BY YY.SSGNM
 	</select>
 	
+	<select id="selectRainfallDatas" parameterType="hashmap" resultType="hashmap">
+		SELECT z.SSG_NM AS SSGNM
+			 , IFNULL(truncate(a.AWS_1HR_MAP,1), '-') AS H2M
+			 , IFNULL(truncate(b.AWS_1HR_MAP,1), '-') AS H1M
+			 , IFNULL(truncate(c.AWS_1HR_MAP,1), '-') AS H0M
+			 , IFNULL(truncate(d.prcp,1), '-') AS H1P
+			 , IFNULL(truncate(e.prcp,1), '-') AS H2P
+			 , IFNULL(truncate(f.prcp,1), '-') AS H3P
+			 , f.tm as tm
+		  FROM TBL_ADMIN_SSG_INFO AS z  
+			   LEFT JOIN (SELECT SSG_CD, AWS_1HR_MAP FROM TBL_AWS_1HR_MAP_DATA WHERE OBS_TM = DATE_FORMAT(DATE_ADD(STR_TO_DATE(#{dt0H}, '%Y%m%d%H%i%s'), INTERVAL -2 HOUR), '%Y%m%d%H')) AS a ON z.SSG_CD = a.SSG_CD
+			   LEFT JOIN (SELECT SSG_CD, AWS_1HR_MAP FROM TBL_AWS_1HR_MAP_DATA WHERE OBS_TM = DATE_FORMAT(DATE_ADD(STR_TO_DATE(#{dt0H}, '%Y%m%d%H%i%s'), INTERVAL -1 HOUR), '%Y%m%d%H')) AS b ON z.SSG_CD = b.SSG_CD
+			   LEFT JOIN (SELECT SSG_CD, AWS_1HR_MAP FROM TBL_AWS_1HR_MAP_DATA WHERE OBS_TM = DATE_FORMAT(DATE_ADD(STR_TO_DATE(#{dt0H}, '%Y%m%d%H%i%s'), INTERVAL 0 HOUR), '%Y%m%d%H')) AS c ON z.SSG_CD = c.SSG_CD
+			   LEFT JOIN (SELECT ssg_cd, prcp FROM kma_shortfcst_map WHERE init_tm = (SELECT max(init_tm) FROM kma_shortfcst_map WHERE init_tm  &lt;= CONCAT(#{dt0H},'00')) AND fcst_tm = DATE_FORMAT(DATE_ADD(STR_TO_DATE(CONCAT(#{dt0H},'00'), '%Y%m%d%H%i%s'), INTERVAL 1 HOUR), '%Y%m%d%H%i')) AS d ON z.SSG_CD = d.ssg_cd
+			   LEFT JOIN (SELECT ssg_cd, prcp FROM kma_shortfcst_map WHERE init_tm = (SELECT max(init_tm) FROM kma_shortfcst_map WHERE init_tm  &lt;= CONCAT(#{dt0H},'00')) AND fcst_tm = DATE_FORMAT(DATE_ADD(STR_TO_DATE(CONCAT(#{dt0H},'00'), '%Y%m%d%H%i%s'), INTERVAL 2 HOUR), '%Y%m%d%H%i')) AS e ON z.SSG_CD = e.ssg_cd
+			   LEFT JOIN (SELECT (SELECT max(init_tm) FROM kma_shortfcst_map WHERE init_tm &lt;= CONCAT(#{dt0H},'00')) AS tm, ssg_cd, prcp FROM kma_shortfcst_map WHERE init_tm = (SELECT max(init_tm) FROM kma_shortfcst_map WHERE init_tm &lt;= CONCAT(#{dt0H},'00')) AND fcst_tm = DATE_FORMAT(DATE_ADD(STR_TO_DATE(CONCAT(#{dt0H},'00'), '%Y%m%d%H%i%s'), INTERVAL 3 HOUR), '%Y%m%d%H%i')) AS f ON z.SSG_CD = f.ssg_cd	
+			ORDER BY SSG_NM
+	</select>
+	
 	
 	<select id="selectNodeData" parameterType="hashmap" resultType="hashmap">
 		SELECT b.ACC_PRCP AS ACCPRCP

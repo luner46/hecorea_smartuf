@@ -6,6 +6,7 @@ import java.util.HashMap;
 public interface MainContDAO {
 	
 	public ArrayList<HashMap<String, String>> selectRainfallData(HashMap<String, String> param) throws Exception;
+	public ArrayList<HashMap<String, String>> selectRainfallDatas(HashMap<String, String> param) throws Exception;
 	
 	public ArrayList<HashMap<String, String>> selectNodeData(HashMap<String, String> param) throws Exception;
 	

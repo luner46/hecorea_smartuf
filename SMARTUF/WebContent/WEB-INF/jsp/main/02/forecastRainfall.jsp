@@ -95,90 +95,124 @@ function selectData() {
 		 */
 		 return;
 	}else{
-		$(".maparea img:eq(0)").attr("src", "/images/img_map_434x307.gif");
+		/* $(".maparea img:eq(0)").attr("src", "/images/img_map_434x307.gif");
 		$(".maparea img:eq(1)").attr("src", "/images/img_map_434x307.gif");
-		$(".maparea img:eq(2)").attr("src", "/images/img_map_434x307.gif");
+		$(".maparea img:eq(2)").attr("src", "/images/img_map_434x307.gif"); */
 	}
 	
 	currentDateCheck("em_issuestime");
 	updateDateText("H1P", h1p_value);
 	updateDateText("H2P", h2p_value);
 	updateDateText("H3P", h3p_value);
-	
-	
-	
-	for(var i=0; i<gu_arr.length; i++) {
-		var h2m = selectAddHourProc (h0m_value, -2) > now_value? "-":"0.0";
-		var h1m = selectAddHourProc (h0m_value, -1) > now_value? "-":"0.0";
-		var h0m = h0m_value > now_value? "-":"0.0";
-		var h1p = h0m_value > now_value? "-":"0.0";
-		var h2p = h0m_value > now_value? "-":"0.0";
-		var h3p = h0m_value > now_value? "-":"0.0";
-		
-		html += "<tr>";
-		html += "<td>" + gu_arr[i] + "</td>";
-		html += "<td>" + h2m + "</td>";
-		html += "<td>" + h1m + "</td>";
-		html += "<td>" + h0m + "</td>";
-		html += "<td>" + h1p + "</td>";
-		html += "<td>" + h2p + "</td>";
-		html += "<td>" + h3p + "</td>";
-		html += "</tr>";
-	}
-	
-	$(".tbody_data").eq(0).html(html);
-	
-	/* 
+
 	$.ajax({
 		type: "POST",
-		url: "/floodCont/selectRainfallData.do",
+		url: "/floodCont/selectRainfallsData.do",
 		dataType: "json",
 		async : false,
 		data: {'dt': selectIssuetime() + '' + selectIssuehour() + '00'},
 		success: function(data) {
+			console.log(data.dataLists[0].tm)
 			var html = "";
 			var html1 = "";
 			
-			for(var i=0; i<data.dataList.length; i++) {
+			for(var i=0; i<data.dataLists.length; i++) {
 				html += "<tr>";
-				html += "<td>" + data.dataList[i].SSGNM + "</td>";
-				html += "<td>" + data.dataList[i].H2M + "</td>";
-				html += "<td>" + data.dataList[i].H1M + "</td>";
-				html += "<td>" + data.dataList[i].H0M + "</td>";
-				html += "<td>" + data.dataList[i].H1P + "</td>";
-				html += "<td>" + data.dataList[i].H2P + "</td>";
-				html += "<td>" + data.dataList[i].H3P + "</td>";
+				html += "<td>" + data.dataLists[i].SSGNM + "</td>";
+				html += "<td>" + data.dataLists[i].H2M + "</td>";
+				html += "<td>" + data.dataLists[i].H1M + "</td>";
+				html += "<td>" + data.dataLists[i].H0M + "</td>";
+				html += "<td>" + data.dataLists[i].H1P + "</td>";
+				html += "<td>" + data.dataLists[i].H2P + "</td>";
+				html += "<td>" + data.dataLists[i].H3P + "</td>";
 				html += "</tr>";
 			}
 			
-			$(".tbody_data").eq(0).html(html);
-			
-			var src = "/ncl_images/aws_1hr/" + yy  + "/" + mm + "/" + dd + "/AWS_1HR_PRCP_" + selectIssuetime() + '' + selectIssuehour() +"_DAEGU.png"
-			
-			$('#src').val(src);
-			
-			$('.cnt').html("<img id='check_img' src=" + src + "' onerror='javascript:selectCheckImage();'/ >");
+			$(".tbody_data").html(html);
 
+			var hour1P = selectAddTimeProcHou(selectIssuetime() + '' + selectIssuehour(), 1);
+			var hour2P = selectAddTimeProcHou(selectIssuetime() + '' + selectIssuehour(), 2);
+			var hour3P = selectAddTimeProcHou(selectIssuetime() + '' + selectIssuehour(), 3);
+			var hour = [hour1P,hour2P,hour3P];
+			// tm = '9999999999';
+			
+			for(var hp in hour){
+				for(var i=0; i<8; i++) {
+					if(data.dataLists[0].tm){
+						var tm = (selectAddTimeProcHou(data.dataLists[0].tm, -(i*3)));
+						
+						var yyTm = tm.substr(0, 4);
+						var mmTm = tm.substr(4, 2);
+						var ddTm = tm.substr(6, 2);
+						
+						var src =  "/ncl_images/fcst_rainfall/"+ yyTm +"/"+ mmTm +"/"+ ddTm +"/mappandas_" + tm + "00_" + hour[hp] + "00.png";
+						var req = new XMLHttpRequest();
+					    req.open('GET', src, false);	        
+					    req.send();
+					    var headers = req.status;
+
+					  	if(headers == 200){
+					    	$(".maparea:eq("+hp+") .cnt").html("<img id='check_img' src=" + src + " onerror='javascript:selectCheckImage();'/ >");
+					    	break;
+					    } else {
+					    	$(".maparea:eq("+hp+") .cnt").html("");
+					    }
+					} else {
+						$(".maparea:eq("+hp+") .cnt").html("");
+					}
+					
+					
+				}
+			}
+
+		/* 	$('#src').val(src);
+
+			$('.maparea:eq(0) .cnt').html("<img id='check_img' src=" + src + " onerror='javascript:selectCheckImage();'/ >");
+			$('.maparea:eq(1) .cnt').html("<img id='check_img' src=" + src + " onerror='javascript:selectCheckImage();'/ >"); */
+			
+			
+			/*
 			//th add 2021-08-23
 			for(var i=0; i<data.stnList.length; i++) {
 				console.log(data.stnList[i].rnmm);
 				console.log(data.stnList[i].ssgnm);
 			}
-			
+			*/
 		}
 	});
-	 */
+	 
 	
+}
+
+function selectAddTimeProcHou(issue_mt, it) {
+	var temp_year = issue_mt.substr(0, 4);
+	var temp_month = issue_mt.substr(4, 2);
+	var temp_day = issue_mt.substr(6, 2);
+	var temp_hour = issue_mt.substr(8, 2);
+	var temp_minute = issue_mt.substr(10, 2);
+	var temp_date = new Date(temp_year, temp_month - 1, temp_day, temp_hour, temp_minute);
+	temp_date.setHours(temp_date.getHours() + parseInt(it)); // + Hours
+	var new_year = temp_date.getFullYear();
+	var new_month = temp_date.getMonth() + 1;
+	var new_day = temp_date.getDate();
+	var new_hour = temp_date.getHours();
+	var new_minutes = temp_date.getMinutes();
+	var str_new_year = new_year;
+	var str_new_month = (parseInt(new_month) < 10)?"0"+new_month:new_month;
+	var str_new_day = (parseInt(new_day) < 10)?"0"+new_day:new_day;
+	var str_new_hour = (parseInt(new_hour) < 10)?"0"+new_hour:new_hour;
+	var str_new_minutes = (parseInt(new_minutes) < 10)?"0"+new_minutes:new_minutes;
+	return "" + str_new_year + str_new_month + str_new_day + str_new_hour;
 }
 
 function selectCheckImage(idx) {
 	var image = document.getElementById('check_img');
-	var src = $('#src').val();
+	//var src = $('#src').val();
 	
 	$('.no_data').hide();
 	$('.cnt').show();
 	
-	$('#check_img').attr('src', src);
+	//$('#check_img').attr('src', src);
 	
 	image.onerror = function () {
 		$('.no_data').show();
@@ -219,15 +253,25 @@ $(document).on("change", "#input_hour", function() {
             <ul>
                 <li>
                     <p><em>+1h</em><span id="H1P">(2021년 10월 07일 15시)</span></p>
-                    <div class="maparea"><img src="/images/img_map_434x307.gif" alt=""/></div>
+                    <div class="maparea">
+                    	<div class="cnt"></div>
+					  	<div class="no_data" style="display: none"><p>자료가 생산되지 않았습니다.</p></div>
+                    </div>
+					  	
                 </li>
                 <li>
                     <p><em>+2h</em><span id="H2P">(2021년 10월 07일 16시)</span></p>
-                    <div class="maparea"><img src="/images/img_map_434x307.gif" alt=""/></div>
+                    <div class="maparea">
+                    	<div class="cnt"></div>
+					  	<div class="no_data" style="display: none"><p>자료가 생산되지 않았습니다.</p></div>
+                    </div>
                 </li>
                 <li>
                     <p><em>+3h</em><span id="H3P">(2021년 10월 07일 17시)</span></p>
-                    <div class="maparea"><img src="/images/img_map_434x307.gif" alt=""/></div>
+                    <div class="maparea">
+                    	<div class="cnt"></div>
+					  	<div class="no_data" style="display: none"><p>자료가 생산되지 않았습니다.</p></div>
+					</div>
                 </li>
             </ul>
             <h3>자치구별 예측강우(mm/hr)</h3>

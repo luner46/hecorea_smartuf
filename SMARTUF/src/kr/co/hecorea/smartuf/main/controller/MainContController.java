@@ -1,15 +1,13 @@
 package kr.co.hecorea.smartuf.main.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +43,7 @@ public class MainContController {
 		ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
 		ArrayList<HashMap<String, String>> stnList = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> param = new HashMap<String, String>();
+	
 		
 		try{
 			CalculationDate calculationDate = new CalculationDate();
@@ -67,6 +66,35 @@ public class MainContController {
 		
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("stnList", stnList);
+		
+		return "jsonView";
+	}
+	
+	@RequestMapping(value="/selectRainfallsData.do")
+	public String selectRainfallsData(HttpServletRequest req, Model model) throws Exception {
+		String issueDate = req.getParameter("dt")==null?"":req.getParameter("dt");
+		
+		ArrayList<HashMap<String, String>> dataLists = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> param = new HashMap<String, String>();
+		
+		try{			
+			log.info("issueDate: " + issueDate.substring(0, 10));
+			
+			param.put("dt0H", issueDate.substring(0, 10));
+			param.put("dt1H", issueDate.substring(0, 10));
+			param.put("dt2H", issueDate.substring(0, 10));
+			//System.out.println("파라미터 : "+param);
+			MainContDAO mainContDAO = sqlSession.getMapper(MainContDAO.class);
+			dataLists = mainContDAO.selectRainfallDatas(param);
+			//System.out.println("결과값 : "+dataLists.get(0).get("tm") );
+
+			log.info("dataList.size: " + dataLists.size());
+			
+		}catch(Exception e) {
+			log.error(e.toString());
+		}
+		
+		model.addAttribute("dataLists", dataLists);
 		
 		return "jsonView";
 	}
